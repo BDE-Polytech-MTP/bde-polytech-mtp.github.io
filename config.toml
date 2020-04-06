@@ -1,4 +1,4 @@
-baseURL = "bde-polytech-mtp.github.io"
+baseURL = ""
 languageCode = "fr-fr"
 title = "Polytech MTP BDE"
 theme = "hugo-theme-learn"
