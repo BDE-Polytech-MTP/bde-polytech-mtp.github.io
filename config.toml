@@ -1,0 +1,12 @@
+baseURL = "bde-polytech-mtp.github.io"
+languageCode = "fr-fr"
+title = "Polytech MTP BDE"
+theme = "hugo-theme-learn"
+
+[params]
+themeVariant = "blue"
+author = "Florent HUGOUVIEUX"
+description = "Documentation for BDE website of Polytech Montpellier"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON" ]
