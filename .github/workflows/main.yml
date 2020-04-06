@@ -3,19 +3,29 @@ name: Github pages
 on:
   push:
     branches:
-    - master
+      - dev
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@master
-      with:
-        submodules: true
-    - name: build
-      uses: mattbailey/actions-hugo@v0.57.2
-      if: github.event.deleted == false
-      with:
-        args: --gc --minify
-      env:
-        GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_TOKEN }}
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.62.2'
+          # extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: master
