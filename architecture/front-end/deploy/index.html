@@ -1,0 +1,98 @@
+<!doctype html><html lang=en class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.62.2"><meta name=description content="Documentation for BDE website of Polytech Montpellier"><meta name=author content="Florent HUGOUVIEUX"><link rel=icon href=/bde-polytech-mtp.github.io/images/favicon.png type=image/png><title>Le déploiement :: Polytech MTP BDE</title><link href=/bde-polytech-mtp.github.io/css/nucleus.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/fontawesome-all.min.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/hybrid.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/featherlight.min.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/perfect-scrollbar.min.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/auto-complete.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/atom-one-dark-reasonable.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/theme.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/hugo-theme.css?1586215502 rel=stylesheet><link href=/bde-polytech-mtp.github.io/css/theme-blue.css?1586215502 rel=stylesheet><script src=/bde-polytech-mtp.github.io/js/jquery-3.3.1.min.js?1586215502></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=bde-polytech-mtp.github.io/architecture/front-end/deploy/><nav id=sidebar><div id=header-wrapper><div id=header><strong style=color:#fff>BDE Polytech Montpellier</strong></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label><input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=/bde-polytech-mtp.github.io/js/lunr.min.js?1586215502></script><script type=text/javascript src=/bde-polytech-mtp.github.io/js/auto-complete.js?1586215502></script><script type=text/javascript>var baseurl="bde-polytech-mtp.github.io";</script><script type=text/javascript src=/bde-polytech-mtp.github.io/js/search.js?1586215502></script></div><div class=highlightable><ul class=topics><li data-nav-id=bde-polytech-mtp.github.io/architecture/ title=Architecture class="dd-item
+parent"><a href=bde-polytech-mtp.github.io/architecture/><b>1. </b>Architecture</a><ul><li data-nav-id=bde-polytech-mtp.github.io/architecture/front-end/ title="Front End" class="dd-item
+parent"><a href=bde-polytech-mtp.github.io/architecture/front-end/>Front End</a><ul><li data-nav-id=bde-polytech-mtp.github.io/architecture/front-end/resources/ title="Les resources" class=dd-item><a href=bde-polytech-mtp.github.io/architecture/front-end/resources/>Les resources</a></li><li data-nav-id=bde-polytech-mtp.github.io/architecture/front-end/deploy/ title="Le déploiement" class="dd-item active"><a href=bde-polytech-mtp.github.io/architecture/front-end/deploy/>Le déploiement</a></li></ul></li></ul></li></ul><section id=footer></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i></a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span><span class=links><a href=bde-polytech-mtp.github.io/>Accueil</a> > <a href=bde-polytech-mtp.github.io/architecture/>Architecture</a> > <a href=bde-polytech-mtp.github.io/architecture/front-end/>Front End</a> > Le déploiement</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#déploiement-de-larchitecture>Déploiement de l'architecture</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Le déploiement</h1><h2 id=déploiement-de-larchitecture>Déploiement de l'architecture</h2><p>Pour déployer l'architecture il suffit de passer par CloudFormation qui va nous permettre de déployer notre stack directement depuis un fichier de configuration.
+Pour cela il suffit de se connecter sur la console AWS, d'aller sur CloudFormation et de créer une pile depuis le modèle ci-dessous. Il n'y a rien d'autre à configurer.</p><div class="notices note"><p>Pensez à bien sélectionner la région <em>Paris (eu-west-3)</em> avant de créer la pile</p></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>AWSTemplateFormatVersion: <span style=color:#e6db74>&#39;2010-09-09&#39;</span>
+Description: <span style=color:#e6db74>&#39;S3 content distribution through CloudFront&#39;</span>
+
+Resources:
+  S3Bucket:
+    Type: <span style=color:#e6db74>&#39;AWS::S3::Bucket&#39;</span>
+    DeletionPolicy: <span style=color:#e6db74>&#39;Delete&#39;</span>
+    Metadata:
+      Comment: <span style=color:#e6db74>&#39;Bucket used to store frontend files&#39;</span>
+    Properties:
+      AccessControl: <span style=color:#e6db74>&#39;Private&#39;</span>
+      BucketName: !Sub <span style=color:#e6db74>&#39;bde-mtp-frontend&#39;</span>
+
+  S3BucketPolicy:
+    Type: <span style=color:#e6db74>&#39;AWS::S3::BucketPolicy&#39;</span>
+    Metadata:
+      Comment: <span style=color:#e6db74>&#39;Bucket policy to allow cloudfront to access the data&#39;</span>
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - <span style=color:#e6db74>&#39;s3:GetObject&#39;</span>
+            Effect: <span style=color:#e6db74>&#39;Allow&#39;</span>
+            Principal:
+              CanonicalUser: !GetAtt CfOriginAccessIdentity.S3CanonicalUserId
+            Resource:
+              - !Sub <span style=color:#e6db74>&#39;arn:aws:s3:::${S3Bucket}/*&#39;</span>
+
+  CfDistribution:
+    Type: <span style=color:#e6db74>&#39;AWS::CloudFront::Distribution&#39;</span>
+    Metadata:
+      Comment: <span style=color:#e6db74>&#39;A CloudFront distribution with an S3 origin&#39;</span>
+    Properties:
+      DistributionConfig:
+        Comment: <span style=color:#e6db74>&#39;A distribution with an S3 origin&#39;</span>
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - <span style=color:#e6db74>&#39;HEAD&#39;</span>
+            - <span style=color:#e6db74>&#39;GET&#39;</span>
+          CachedMethods:
+            - <span style=color:#e6db74>&#39;HEAD&#39;</span>
+            - <span style=color:#e6db74>&#39;GET&#39;</span>
+          Compress: <span style=color:#66d9ef>true</span>
+          DefaultTTL: <span style=color:#ae81ff>86400</span>
+          ForwardedValues:
+            Cookies:
+              Forward: <span style=color:#e6db74>&#39;none&#39;</span>
+            Headers:
+              - <span style=color:#e6db74>&#39;Origin&#39;</span>
+            QueryString: <span style=color:#66d9ef>false</span>
+          MaxTTL: <span style=color:#ae81ff>31536000</span>
+          MinTTL: <span style=color:#ae81ff>86400</span>
+          TargetOriginId: !Sub <span style=color:#e6db74>&#39;s3-origin-${S3Bucket}&#39;</span>
+          ViewerProtocolPolicy: <span style=color:#e6db74>&#39;redirect-to-https&#39;</span>
+        DefaultRootObject: <span style=color:#e6db74>&#39;index.html&#39;</span>
+        Enabled: <span style=color:#66d9ef>true</span>
+        HttpVersion: <span style=color:#e6db74>&#39;http2&#39;</span>
+        IPV6Enabled: <span style=color:#66d9ef>true</span>
+        Origins:
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
+            Id: !Sub <span style=color:#e6db74>&#39;s3-origin-${S3Bucket}&#39;</span>
+            OriginPath: <span style=color:#e6db74>&#39;&#39;</span>
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub <span style=color:#e6db74>&#39;origin-access-identity/cloudfront/${CfOriginAccessIdentity}&#39;</span>
+        PriceClass: <span style=color:#e6db74>&#39;PriceClass_100&#39;</span>
+        CustomErrorResponses: 
+          ErrorCachingMinTTL: <span style=color:#ae81ff>300</span>
+          ErrorCode: <span style=color:#ae81ff>404</span>
+          ResponsePagePath: <span style=color:#e6db74>&#39;/index.html&#39;</span>
+
+
+  CfOriginAccessIdentity:
+    Type: <span style=color:#e6db74>&#39;AWS::CloudFront::CloudFrontOriginAccessIdentity&#39;</span>
+    Metadata:
+      Comment: <span style=color:#e6db74>&#39;Access S3 bucket content only through CloudFront&#39;</span>
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: <span style=color:#e6db74>&#39;Access S3 bucket content only through CloudFront&#39;</span>
+
+Outputs:
+  Region:
+    Description: <span style=color:#e6db74>&#39;Stack deployement region&#39;</span>
+    Value: !Ref <span style=color:#e6db74>&#39;AWS::Region&#39;</span>
+  S3BucketName:
+    Description: <span style=color:#e6db74>&#39;Bucket name&#39;</span>
+    Value: !Ref S3Bucket
+  CfDistributionId:
+    Description: <span style=color:#e6db74>&#39;CloudFront Distribution ID&#39;</span>
+    Value: !Ref CfDistribution
+  CfDistributionDomainName:
+    Description: <span style=color:#e6db74>&#39;CloudFront Distribution Domain Name&#39;</span>
+    Value: !GetAtt CfDistribution.DomainName
+</code></pre></div><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=bde-polytech-mtp.github.io/architecture/front-end/resources/ title="Les resources"><i class="fa fa-chevron-left"></i></a><a class="nav nav-next" href=bde-polytech-mtp.github.io/architecture/front-end/resources/ title="Les resources" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=/bde-polytech-mtp.github.io/js/clipboard.min.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/perfect-scrollbar.min.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/perfect-scrollbar.jquery.min.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/jquery.sticky.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/featherlight.min.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/highlight.pack.js?1586215502></script><script>hljs.initHighlightingOnLoad();</script><script src=/bde-polytech-mtp.github.io/js/modernizr.custom-3.6.0.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/learn.js?1586215502></script><script src=/bde-polytech-mtp.github.io/js/hugo-learn.js?1586215502></script><link href=/bde-polytech-mtp.github.io/mermaid/mermaid.css?1586215502 rel=stylesheet><script src=/bde-polytech-mtp.github.io/mermaid/mermaid.js?1586215502></script><script>mermaid.initialize({startOnLoad:true});</script></body></html>
