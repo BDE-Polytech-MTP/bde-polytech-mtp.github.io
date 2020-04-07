@@ -1,5 +1,5 @@
 ---
-title: "Les resources"
+title: "Les ressources"
 date: 2020-04-07T00:32:01+02:00
 weight: 1
 ---

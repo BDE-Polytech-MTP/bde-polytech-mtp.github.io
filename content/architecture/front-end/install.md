@@ -1,12 +1,12 @@
 ---
-title: "Le déploiement"
+title: "Installation"
 date: 2020-04-07T00:32:01+02:00
 weight: 2
 ---
 
-## Déploiement de l'architecture
+## Installation de l'architecture
 
-Pour déployer l'architecture il suffit de passer par CloudFormation qui va nous permettre de déployer notre stack directement depuis un fichier de configuration.
+Pour installer l'architecture il suffit de passer par CloudFormation qui va nous permettre de déployer notre stack directement depuis un fichier de configuration.
 Pour cela il suffit de se connecter sur la console AWS, d'aller sur CloudFormation et de créer une pile depuis le modèle ci-dessous. Il n'y a rien d'autre à configurer.
 
 {{% notice note %}}
