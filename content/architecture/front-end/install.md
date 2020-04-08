@@ -13,6 +13,10 @@ Pour cela il suffit de se connecter sur la console AWS, d'aller sur CloudFormati
 Pensez à bien sélectionner la région *Paris (eu-west-3)* avant de créer la pile
 {{% /notice %}}
 
+{{% notice note %}}
+Cette configuration a été créée dans le but de servir une [SPA](https://en.wikipedia.org/wiki/Single-page_application), c'est pourquoi en cas d'erreur 404 nous renvoyons le fichier `index.html`
+{{% /notice %}}
+
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'S3 content distribution through CloudFront'
@@ -25,7 +29,7 @@ Resources:
       Comment: 'Bucket used to store frontend files'
     Properties:
       AccessControl: 'Private'
-      BucketName: !Sub 'bde-mtp-frontend'
+      BucketName: !Sub '${AWS::StackName}-s3-bucket'
 
   S3BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
@@ -81,9 +85,10 @@ Resources:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CfOriginAccessIdentity}'
         PriceClass: 'PriceClass_100'
         CustomErrorResponses: 
-          ErrorCachingMinTTL: 300
-          ErrorCode: 404
-          ResponsePagePath: '/index.html'
+          - ErrorCachingMinTTL: 300
+            ErrorCode: 404
+            ResponsePagePath: '/index.html'
+            ResponseCode: 200
 
 
   CfOriginAccessIdentity:
@@ -108,3 +113,10 @@ Outputs:
     Description: 'CloudFront Distribution Domain Name'
     Value: !GetAtt CfDistribution.DomainName
 ```
+
+Une fois que la pile est créée (état `CREATE_COMPLETE`) vous pouvez trouver dans l'onglet `Sorties` le nom de domaine correspondant à votre distribution CloudFront. Celle-ci est la valeur associée à la clé `CfDistributionDomainName`.
+De même, vous pouvez trouver le nom du S3 Bucket créé. C'est la valeur associée à la clé `S3BucketName`.
+
+{{% notice info %}}
+Si vous essayez de vous rendre sur votre domaine CloudFront à ce niveau là du déploiement, vous devriez voir affiché une erreur. Cela est tout à faire normal puisque votre S3 Bucket est vide.
+{{% /notice %}}
