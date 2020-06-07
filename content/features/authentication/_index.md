@@ -1,6 +1,7 @@
 +++
 title = "Authentification"
 date = 2020-04-30T21:05:31+02:00
+weight = 1
 +++
 
 ## Introduction
@@ -11,6 +12,8 @@ La fonctionnalité principale du site du BDE étant la réservation d'événemen
 
 Les utilisateur ne pourront pas créer de compte directement, le BDE devra inscrire les étudiants sur le site afin de leur permettre de se connecter, cela évite qu'un étudiant externe à l'école puisse se créer un compte et réserver un événement. Un système de parrainage permet aux externes d'obtenir un compte et ainsi de se connecter.
 
+##### Étudiant de l'école
+
 Pour un étudiant de l'école, les étapes de la création d'un compte sont les suivantes :
 * Le BDE de son école lui crée un compte sur la plateforme en renseignant son adresse mail, sa section, son nom et son prénom.
 * L'étudiant reçoit un mail à l'adresse indiquée lui permettant de valider son compte dans un temps imparti
@@ -19,6 +22,8 @@ Pour un étudiant de l'école, les étapes de la création d'un compte sont les 
 
 Le compte est créé.
 
+##### Externe
+
 Pour un étudiant externe à l'école la procédure est semblable :
 * L'étudiant parrain entre le mail de l'étudiant externe
 * L'étudiant reçoit un mail à l'adresse indiquée lui permettant de valider son compte dans un temps imparti
@@ -26,6 +31,10 @@ Pour un étudiant externe à l'école la procédure est semblable :
 * L'étudiant rentre les informations et valide
 
 Le compte est créé.
+
+{{% notice note %}}
+La fonctionnalité de parrainage doit pouvoir être désactivable par le BDE en question
+{{% /notice %}}
 
 #### Aspect technique
 
