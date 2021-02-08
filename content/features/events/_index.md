@@ -1,7 +1,7 @@
 +++
 title = "Événements"
 date = 2020-04-30T21:05:31+02:00
-weight = 1
+weight = 2
 +++
 
 ### Création d'un événement
@@ -107,3 +107,7 @@ surveys:
       - name: Bus 5
         max: 60
 ```
+
+### Modification d'un événement
+
+Tous les paramètres d'un événements doivent pouvoir être changés.
